@@ -17,6 +17,8 @@ define([
 ], function (Backbone, $, _, FilteredCollection, Layout, templates, store, actions, NavigationView, TimelineView, MapView, ContinentView, AboutView, DataStore ) {
     'use strict';
 
+    var timeout;
+
     /*
      * The main application layout which contains subviews and handles page switching.
      */
@@ -58,12 +60,13 @@ define([
             },
             closePages: function(){
                 this.el.className = 'page_map';
-                setTimeout(function(){
+                timeout = setTimeout(function(){
                     this.removeView('#about');
                     this.removeView('#continent');
                 }.bind(this), 1000);
             },
             pageSwitcher: function(){
+                clearInterval(timeout);
                 var state = store.getState();
                 // console.log( state );
                 if(state.page === 'about'){

@@ -15,5 +15,6 @@
   },
   "_source": "git://github.com/highslide-software/highcharts-release.git",
   "_target": "~4.2.3",
-  "_originalSource": "highcharts-release"
+  "_originalSource": "highcharts-release",
+  "_direct": true
 }

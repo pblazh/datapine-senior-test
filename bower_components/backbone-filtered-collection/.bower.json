@@ -43,6 +43,5 @@
   },
   "_source": "git://github.com/jmorrell/backbone-filtered-collection.git",
   "_target": "^0.4.0",
-  "_originalSource": "backbone-filtered-collection",
-  "_direct": true
+  "_originalSource": "backbone-filtered-collection"
 }
