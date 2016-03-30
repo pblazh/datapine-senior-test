@@ -6,6 +6,7 @@ Here are the things I've changed in the original repository except writing some 
 - added a Redux.js package
 - added backbone-filtered-collection plugin
 - added a grunt task for compiling SASS
+
 > The Sass task depends on the libsass which is much faster than ruby or node versions, but you need to install it yourself.
 > It works perfectly on Linux and MacOS but I haven't tried it on Windows.
 
@@ -14,6 +15,7 @@ You can also see it here
 
 The more info you can read on an about page in the running version here 
  https://pblazh.github.io/datapine-senior-test/
+ 
 > Javascript left intentionally uncompiled to see it from a browser dev tools.
 
 
