@@ -132,7 +132,7 @@ define([
                         _.map(series,function(e){ return e.data[e.data.length -1];}),
                         setChart(this),
                         _.last(dataTools.field(fc, 'year'))));
-        }, 100),
+        }, 300),
 
         afterRender: function() {
             this.listenTo(this.collection, 'reset', this.buildChart);
