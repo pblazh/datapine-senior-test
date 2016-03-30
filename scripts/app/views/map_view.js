@@ -115,7 +115,7 @@ define([
             _.each(series, function(s){
                 var data = s.data;
                 if(data && data.length && !data[0].marker){
-                    var marker = {symbol: 'url(/assets/' + data[0].name + '_48x48.png)'}
+                    var marker = {symbol: 'url(./assets/' + data[0].name + '_48x48.png)'}
                     data[0].marker = marker;
                     data[data.length - 1].marker = marker;
                 }
@@ -132,7 +132,7 @@ define([
                         _.map(series,function(e){ return e.data[e.data.length -1];}),
                         setChart(this),
                         _.last(dataTools.field(fc, 'year'))));
-        }, 10),
+        }, 100),
 
         afterRender: function() {
             this.listenTo(this.collection, 'reset', this.buildChart);
