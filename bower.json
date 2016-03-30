@@ -1,0 +1,17 @@
+{
+  "name": "senior-test",
+  "version": "0.0.0",
+  "dependencies": {
+    "jquery": "~1.10.2",
+    "requirejs": "~2.1.9",
+    "requirejs-text": "~2.0.10",
+    "underscore": "~1.5.2",
+    "backbone": "~1.1.0",
+    "modernizr": "~2.6.2",
+    "layoutmanager": "~0.9.5",
+    "highcharts": "highcharts-release#~4.2.3",
+    "backbone-filtered-collection": "^0.4.0",
+    "redux": "https://cdnjs.cloudflare.com/ajax/libs/redux/3.0.4/redux.js"
+  },
+  "devDependencies": {}
+}

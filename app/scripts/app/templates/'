@@ -1,0 +1,15 @@
+<nav id='navigation'></nav>
+<section class='main'>
+    <section class='timeline'>
+            <div id='timeline' class='row wrapper'> timeline </div>
+    </section>
+    <section class='content'>
+        <div class='column wrapper'>
+            <div id='about'>about</div>
+            <div class='row wrapper'>
+                <section id='map'> map </section>
+                <section id='continent'> continent </section>
+            </div>
+        </div>
+    </section>
+</section>

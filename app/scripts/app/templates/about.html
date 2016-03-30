@@ -1,0 +1,20 @@
+<h1>the reason</h1>
+<p>Since the task was too complex to complete it in an hour I decided to spend even more time to produce something I can use lately.
+I always have a feeling that browsers are not distributed evenly across the globe. So I've come up with an idea of building an app for viewing statistics of browsers distribution.</p>
+<h1>the choice</h1>
+<p>As I understood the task is use Backbone or Angular and Highcharts. Since I do not consider Angular to be an example of good design the choice was easy. Also, I decided to keep the profile as low as possible, since my goal is not to impress by using an enormous quantity of libraries.</p>
+<p>There was also mentioned what I can use any library I like if I think it gives some benefits to the project. From the start as was thinking of using RX library Kefir to show how nicely it suits for working with rich UI but later changed my mind. Two extra  libraries are too much and I thought the project would benefit more from the Redux. It is a small JS library which implements a one-way-data-flow principle in a slick and clean way.</p>
+<h1>changes</h1>
+<ul>
+<li>I've changed a version of a Highchart since I needed a maps support</li>
+<li>added a Redux.js package</li>
+<li>added backbone-filtered-collection plugin</li>
+<li>added a grunt task for compiling SASS</li>
+    <blockquote>Sass is compiled with the libsass which is much faster than ruby or node versions.  It works perfect on Linux and MacOS but I haven't tried it on Windows</blockquote>
+</ul>
+<h1>side notes</h1>
+<p>As was offered I worked with a backbone layout manager which I have never worked before with. It is OK but in my view Marionette is much more reliable.
+That is my first experience  with the Highcharts either. Honestly, I haven't found a clean solution to deal with its enormous configuration objects yet. So I've just shoveled them away in a separate module for now. Perhaps I just need a little more time to think about it.</p>
+<p>I've also decided to add some animation because I believe it gives some extra niceness for any project and because I consider myself to be good in it. I prefer doing an animation with as much CSS as possible to clean the JS code from unnecessary details. And because it is declarative it is much more reliable. We might not see the animation but will end in the final state.</p>
+<p>Since the main purpose of the code was to be reviewed I tried to make it as clean as possible and also added a lot of comments to help a reviewer to reason about it. It's a shame, but frankly I rarely  write that many comments.</p>
+<p>I ended up with some more ideas to implement and some code to refactor but in my view, I've made a good start.</p>

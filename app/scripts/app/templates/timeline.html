@@ -1,0 +1,42 @@
+<form autocomplete='off' >
+   <fieldset class='years'>
+       <section class='flex'>
+            <input id='navigation_year_all'
+                   type='radio'
+                   name='year'
+                   value='0'
+                   <% print( year === 0 ? 'checked' : '') %>
+            />
+            <label for='navigation_year_all'>all</label>
+        <% years.each(function(name){ %>
+            <input id='navigation_year_<%= name %>'
+                   type='radio'
+                   name='year'
+                   value='<%= name %>'
+                   <% print( year === name ? 'checked' : '') %>
+            />
+            <label for='navigation_year_<%= name %>'><%= name %></label>
+        <% }); %>
+       </section>
+   </fieldset>
+   <fieldset class='browsers'>
+       <section class='flex'>
+            <input id='navigation_browser_all'
+                   type='radio'
+                   name='browser'
+                   value='all'
+                   <% print(browser === 'all' ? 'checked' : '') %>
+            />
+            <label for='navigation_browser_all'></label>
+        <% browsers.each(function(name){ %>
+            <input id='navigation_browser_<%= name %>'
+                   type='radio'
+                   name='browser'
+                   value='<%= name %>'
+                   <% print(RegExp(browser, 'i').test(name) ? 'checked' : '') %>
+            />
+            <label for='navigation_browser_<%= name %>'></label>
+        <% }); %>
+       </section>
+   </fieldset>
+</form>
