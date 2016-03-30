@@ -181,7 +181,6 @@ define([ 'underscore' ], function( _ ){
             );
         },
         circle: function(data, onLoad, title){
-            console.log( data, onLoad, title);
             var n = _.extend({}, circleChart);
             n.chart.events = {load: onLoad};
             n.series[0].data = data;

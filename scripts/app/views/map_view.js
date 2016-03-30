@@ -8,7 +8,8 @@ define([
     'templates',
     '../store/store',
     '../store/actions',
-    '../data/tools', './charts',
+    '../data/tools',
+    './charts',
 ], function(
     Backbone,
     _,
@@ -42,41 +43,18 @@ define([
     var MapView = Backbone.Layout.extend({
         template: templates.map,
         onSelect: function(code){
-            var fc = new FilteredCollection(this.collection);
-            fc.filterBy('ww', {region: code || 'ww',
-                               year: _.last(dataTools.field(fc, 'year'))});
-            fc.filterBy('top', function(model){return model.get('share') >= 1});
-
-            var series = _.map(dataTools.field(fc, 'browser'), function(browser){
-                return {
-                    name: browser,
-                    y: fc.findWhere({browser: browser}).get('share')
-                };
-            }.bind(fc));
+            // when over the continent update the donut chart
+            var fc = dataTools.toTopCollection(this.collection, code || 'ww');
+            var series = dataTools.getByBrowserSeries(fc);
             charts.colorize(series);
-
-            // keep data in sorted order to havae nice animation
-            series.sort(function(a, b){ return (a.name < b.name) ? -1 : (a.name > b.name ? 1 : 0);});
             this.__chart.series[0].setData(series.slice(0,4));
         },
         buildMap: function(){
-            var series;
             var state = store.getState();
-
-            // create a filetered collection which stores only a worldwida data.
-            var fc2 = new FilteredCollection(this.collection);
-            fc2.filterBy('ww', {browser: state.browser,
-                                year: _.last(dataTools.field(fc2, 'year'))});
+            var fc = dataTools.toLastYearCollection(this.collection, state.browser);
 
             // create a data array to build a map
-            series = _.map(dataTools.field(this.collection, 'region'), function(region){
-                var inRegion = fc2.where({region: region});
-                return { 'hc-key': region,
-                    'name': state.browser,
-                    'value': state.browser === 'all'
-                        ? 0 : (inRegion.length ? fc2.where({region: region})[0].get('share') : 0)};
-            });
-            // charts.colorize(series);
+            var series = dataTools.getMapSeries(fc, state.browser);
             this.$('.fgmap').highcharts('Map',
                 charts.map(series,
                     Highcharts.maps['custom/world-continents'],
@@ -93,33 +71,14 @@ define([
          * often the one time in 100ms.
          */
         buildChart: _.debounce(function(){
-            var series;
             /*
              * create a filetered collection which stores only browsers whose
              * share worldwide is more than one percent.
              */
-            var fc = new FilteredCollection(this.collection);
-            fc.filterBy('ww', {region: 'ww'});
-            fc.filterBy('top', function(model){return model.get('share') >= 1});
+            var fc = new FilteredCollection(this.collection).filterBy('ww', {region: 'ww'});
 
             // create a data array to build a chart
-            series = _.map(dataTools.field(fc, 'browser'), function(browser){
-                return {
-                    name: browser,
-                    data: _.map(this.where({browser: browser}),
-                                function(el){ return {name: browser, y: el.get('share')};})
-                };
-            }.bind(fc));
-
-            // set markers to show which line is whose
-            _.each(series, function(s){
-                var data = s.data;
-                if(data && data.length && !data[0].marker){
-                    var marker = {symbol: 'url(./assets/' + data[0].name + '_48x48.png)'}
-                    data[0].marker = marker;
-                    data[data.length - 1].marker = marker;
-                }
-            });
+            var series = dataTools.getChartSeries(fc);
 
             this.$('.bgmap').highcharts(
                 charts.chart('lines', dataTools.field(this.collection, 'year'), series)
@@ -132,7 +91,7 @@ define([
                         _.map(series,function(e){ return e.data[e.data.length -1];}),
                         setChart(this),
                         _.last(dataTools.field(fc, 'year'))));
-        }, 300),
+        }, 100),
 
         afterRender: function() {
             this.listenTo(this.collection, 'reset', this.buildChart);
