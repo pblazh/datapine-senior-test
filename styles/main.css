@@ -395,7 +395,7 @@ h3 {
     position: absolute;
     overflow: hidden;
     left: 0;
-    top: 50px;
+    top: 60px;
     width: 100%;
     bottom: 0;
     background-color: #FFFFFF; }
@@ -484,7 +484,7 @@ h3 {
   background-color: red; }
 
 #map .donut {
-  bottom: 69px;
+  bottom: 71px;
   height: 180px;
   width: 300px;
   position: absolute;
@@ -568,14 +568,16 @@ h3 {
     width: 48px;
     height: 48px;
     cursor: pointer;
-    transform: scale(0.7);
+    transform: scale(0.7) translateY(8px);
     filter: grayscale(100%);
     will-change: transform, filter;
     transition: transform .2s, filter .2s; }
   #app .timeline .browsers input[value=all] + label {
     width: 66px; }
-  #app .timeline .browsers label:hover,
   #app .timeline .browsers input:checked + label {
+    transform: scale(1) translateY(6px);
+    filter: grayscale(0%); }
+  #app .timeline .browsers label:hover {
     transform: scale(1);
     filter: grayscale(0%); }
   #app .timeline .years label {
@@ -593,8 +595,19 @@ h3 {
     font-weight: bold;
     text-decoration: underline;
     cursor: default; }
+  #app .timeline input:not(:checked) + label:hover:after {
+    content: attr(name);
+    position: absolute;
+    font-size: 13px;
+    display: block;
+    left: 50%;
+    z-index: 9;
+    font-weight: bold;
+    transform: translate(-50%, 44px); }
   #app .timeline input[value=all] + label {
     background-image: url("../assets/all_48x48.png"); }
+  #app .timeline input[value=Android] + label {
+    background-image: url("../assets/Android_48x48.png"); }
   #app .timeline input[value=Safari] + label {
     background-image: url("../assets/Safari_48x48.png"); }
   #app .timeline input[value=Chrome] + label {

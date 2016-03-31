@@ -46,7 +46,7 @@
             width: 48px;
             height: 48px;
             cursor: pointer;
-            transform: scale(0.7);
+            transform: scale(0.7) translateY(8px);
             filter: grayscale(100%);
             will-change: transform, filter;
             transition: transform .2s, filter .2s;
@@ -55,8 +55,11 @@
             width: 66px;
         }
 
-        label:hover,
         input:checked+label{
+            transform: scale(1) translateY(6px);
+            filter: grayscale(0%);
+        }
+        label:hover{
             transform: scale(1);
             filter: grayscale(0%);
         }
@@ -85,8 +88,20 @@
         cursor: default;
     }
 
+    input:not(:checked)+label:hover:after{
+        content: attr(name);
+        position: absolute;
+        font-size: 13px;
+        display: block;
+        left: 50%;
+        z-index: 9;
+        font-weight: bold;
+        transform: translate(-50%, 44px);
 
-    @each $browser in all, Safari, Chrome, Opera, Firefox, IE, Edge{
+    }
+
+
+    @each $browser in all, Android, Safari, Chrome, Opera, Firefox, IE, Edge{
         input[value=#{$browser}]+label{
             background-image: url('../assets/#{$browser}_48x48.png');
         }

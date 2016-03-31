@@ -27,7 +27,7 @@
                    value='all'
                    <% print(browser === 'all' ? 'checked' : '') %>
             />
-            <label for='navigation_browser_all'></label>
+            <label for='navigation_browser_all' name='all'></label>
         <% browsers.each(function(name){ %>
             <input id='navigation_browser_<%= name %>'
                    type='radio'
@@ -35,7 +35,7 @@
                    value='<%= name %>'
                    <% print(RegExp(browser, 'i').test(name) ? 'checked' : '') %>
             />
-            <label for='navigation_browser_<%= name %>'></label>
+            <label for='navigation_browser_<%= name %>' name='<%= name %>'></label>
         <% }); %>
        </section>
    </fieldset>

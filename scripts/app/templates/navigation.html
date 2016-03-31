@@ -15,7 +15,7 @@
 
 <% if(page === 'map'){ %>
     <button class='button about'>read about</button>
-    <div class='title world'>browsers</div>
+    <div class='title world'><% print(browser === 'all' ? 'browsers' : browser) %></div>
 <% } %>
 
 <% if(page === 'about'){ %>
