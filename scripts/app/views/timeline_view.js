@@ -1,5 +1,6 @@
 define([
     'underscore',
+    'backbone-filtered-collection',
     'templates',
     './reduced_view',
     '../store/store',
@@ -7,6 +8,7 @@ define([
     '../data/tools',
 ], function(
     _,
+    FilteredCollection,
     templates,
     ReducedView,
     store,
@@ -34,6 +36,13 @@ define([
                 });
         },
         initialize: function() {
+            /*
+             * create a filetered collection which stores only browsers whose
+             * share worldwide is more than one percent.
+             */
+            this.collection = new FilteredCollection(this.collection)
+                .filterBy('ww', {region: 'ww'})
+                .filterBy('top', function(model){return model.get('share') >= 1});
             ReducedView.prototype.initialize.call(this);
             this.listenTo(this.collection, 'reset', this.render);
         },

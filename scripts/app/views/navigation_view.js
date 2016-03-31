@@ -19,7 +19,7 @@ define([
         className: 'navigation',
         template: templates.navigation,
         store: store,
-        interested: ['page', 'region'],
+        interested: ['page', 'region', 'browser'],
         events: {
             'click .button.world': function(){
                 store.dispatch(actions.setPage('map'));

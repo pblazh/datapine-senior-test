@@ -35,19 +35,29 @@ define([
     /*
      * A small utility fuction to maker a breach through the binding.
      */
-    function setChart(self){
+    function setChart(self, callBack){
         return function(){
             self.__chart = this;
+            callBack();
         };
     }
     var MapView = Backbone.Layout.extend({
         template: templates.map,
+        initialize: function(){
+              /*
+             * create a filtered collection which stores only browsers whose
+             * share worldwide is more than one percent.
+             */
+            this.chartCollection = new FilteredCollection(this.collection)
+                .filterBy('ww', {region: 'ww'})
+                .filterBy('top', function(model){return model.get('share') >= 2});
+        },
         onSelect: function(code){
             // when over the continent update the donut chart
             var fc = dataTools.toTopCollection(this.collection, code || 'ww');
             var series = dataTools.getByBrowserSeries(fc);
             charts.colorize(series);
-            this.__chart.series[0].setData(series.slice(0,4));
+            this.__chart.series[0].setData(series.slice(0,7));
         },
         buildMap: function(){
             var state = store.getState();
@@ -71,26 +81,19 @@ define([
          * often the one time in 100ms.
          */
         buildChart: _.debounce(function(){
-            /*
-             * create a filetered collection which stores only browsers whose
-             * share worldwide is more than one percent.
-             */
-            var fc = new FilteredCollection(this.collection).filterBy('ww', {region: 'ww'});
-
             // create a data array to build a chart
-            var series = dataTools.getChartSeries(fc);
-
+            var series = dataTools.getChartSeries(this.chartCollection);
             this.$('.bgmap').highcharts(
                 charts.chart('lines', dataTools.field(this.collection, 'year'), series)
             );
 
-
-            this.buildMap();
             this.$('.donut').highcharts(
                     charts.circle(
-                        _.map(series,function(e){ return e.data[e.data.length -1];}),
-                        setChart(this),
-                        _.last(dataTools.field(fc, 'year'))));
+                        [],
+                        setChart(this, this.onSelect.bind(this)),
+                        _.last(dataTools.field(this.collection, 'year'))));
+
+            this.buildMap();
         }, 100),
 
         afterRender: function() {
