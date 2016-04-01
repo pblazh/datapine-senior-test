@@ -1,4 +1,5 @@
-define(['backbone', 'underscore', 'jquery'], function(Backbone, _, $){
+define(['backbone', 'underscore', 'jquery', '../store/store', '../store/actions'],
+       function(Backbone, _, $, store, actions){
     'use strict';
 
     /*
@@ -55,7 +56,14 @@ define(['backbone', 'underscore', 'jquery'], function(Backbone, _, $){
             return list.reduce(
                 function(prev, o){
                     return prev.then(function(){
-                        return self.fetch(o.url, {region: o.region, remove: false});
+                        var d = new $.Deferred();
+                        self.fetch(o.url, {region: o.region, remove: false})
+                            .fail(function(err){
+                                store.dispatch(actions.addError('Got an error while fetching '+ o.url));
+                                d.resolve();
+                            })
+                            .done(function(data){d.resolve()});
+                        return d.promise();
                     });
                 },
                 $.Deferred().resolve()
@@ -63,10 +71,14 @@ define(['backbone', 'underscore', 'jquery'], function(Backbone, _, $){
         },
 
         parse: function(data) {
-            var res = _.map(data.split('\n'),
-                            function(str){ return str.split(','); });
-            var columns = res[0].map(function(entry){return entry.slice(1, -1);});
-            return _.flatten(res.slice(1).map(toObjects(columns, this.region)));
+            if(data){
+                var res = _.map(data.split('\n'),
+                                function(str){ return str.split(','); });
+                var columns = res[0].map(function(entry){return entry.slice(1, -1);});
+                return _.flatten(res.slice(1).map(toObjects(columns, this.region)));
+            }else{
+                return [];
+            }
         },
 
         fetch: function(url, options){

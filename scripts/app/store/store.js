@@ -6,6 +6,7 @@ define(['redux', 'underscore', './actions'], function (redux, _, actions) {
         browser: 'all',
         region: 'ww',
         year: 0,
+        errors: [],
     };
 
     // pairs 'action type' : 'stat property'
@@ -32,6 +33,18 @@ define(['redux', 'underscore', './actions'], function (redux, _, actions) {
             return _.extend({}, state, {
                 page: 'continent',
                 region: action.value,
+            });
+        }
+        // whenever ann error ocurred store it
+        if(action.type === actions.ADD_ERROR){
+            return _.extend({}, state, {
+                errors: state.errors.concat(action.value),
+            });
+        }
+        // clear errors
+        if(action.type === actions.CLEAR_ERRORS){
+            return _.extend({}, state, {
+                errors: [],
             });
         }
         // whenever a new value came return a new state with it.

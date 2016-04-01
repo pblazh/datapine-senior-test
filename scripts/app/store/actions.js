@@ -7,6 +7,8 @@ define(['underscore'], function (_) {
         SET_REGION: 'SET_REGION',
         FILTER_BROWSER: 'FILTER_BROWSER',
         FILTER_YEAR: 'FILTER_YEAR',
+        ADD_ERROR: 'ADD_ERROR',
+        CLEAR_ERRORS: 'CLEAR_ERRORS',
     };
 
     // It generates an action creator
@@ -21,5 +23,7 @@ define(['underscore'], function (_) {
         setRegion: action(consts.SET_REGION),
         filterBrowser: action(consts.FILTER_BROWSER),
         filterYear: action(consts.FILTER_YEAR),
+        addError: action(consts.ADD_ERROR),
+        clearErrors: action(consts.CLEAR_ERRORS),
     });
 });
