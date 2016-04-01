@@ -1,3 +1,10 @@
+<% if(errors.length){ %>
+    <ul class='errorsbox'>
+        <% errors.forEach(function(error){%>
+        <li><%= error %></li>
+        <% });%>
+    </ul>
+<% } %>
 <% if(page === 'continent'){ %>
     <button class='button world'>worldwide</button>
     <div class='title continent'>

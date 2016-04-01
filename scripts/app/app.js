@@ -31,7 +31,7 @@ define([
          * differrent regions.
          */
         var dt = new DataStore();
-        dt.load(_.map(['ww', 'eu', 'na', 'sa', 'oc', 'as', 'af'], function(region){
+        dt.load(_.map(['ww', 'hz', 'eu', 'na', 'sa', 'oc', 'as', 'af'], function(region){
             return {region: region, url: ['./data/browser-', '-yearly-2010-2016.csv'].join(region)};
         }));
 

@@ -19,13 +19,16 @@ define([
         className: 'navigation',
         template: templates.navigation,
         store: store,
-        interested: ['page', 'region', 'browser'],
+        interested: ['page', 'region', 'browser', 'errors'],
         events: {
             'click .button.world': function(){
                 store.dispatch(actions.setPage('map'));
             },
             'click .button.about': function(){
                 store.dispatch(actions.setPage('about'));
+            },
+            'click .errorsbox': function(){
+                store.dispatch(actions.clearErrors());
             },
         },
     });
