@@ -31,9 +31,6 @@ define([
          * differrent regions.
          */
         var dt = new DataStore();
-        dt.load(_.map(['ww', 'hz', 'eu', 'na', 'sa', 'oc', 'as', 'af'], function(region){
-            return {region: region, url: ['./data/browser-', '-yearly-2010-2016.csv'].join(region)};
-        }));
 
         fc = new FilteredCollection(dt);
 
@@ -65,9 +62,8 @@ define([
                 }.bind(this), 1000);
             },
             pageSwitcher: function(){
-                clearInterval(timeout);
                 var state = store.getState();
-                // console.log( state );
+                clearInterval(timeout);
                 if(state.page === 'about'){
                     mainLayout.openAbout();
                 } else if(state.page === 'map'){
@@ -82,11 +78,15 @@ define([
                  * the layout and change a base element CSS class to easily
                  * access the page property from the CSS.
                  */
+                _.bindAll(this, 'pageSwitcher');
                 store.subscribe(this.pageSwitcher);
             },
             afterRender: function(){
                 // Set an initial state.
                 this.pageSwitcher();
+                dt.load(_.map(['ww', 'hz', 'eu', 'na', 'sa', 'oc', 'as', 'af'], function(region){
+                    return {region: region, url: ['./data/browser-', '-yearly-2010-2016.csv'].join(region)};
+                }));
             },
         });
 

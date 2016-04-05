@@ -1,9 +1,11 @@
 define([
     'underscore',
     'backbone-filtered-collection',
+    '../constants'
 ], function(
     _,
-    FilteredCollection
+    FilteredCollection,
+    constants
 ){
     'use strict';
 
@@ -27,10 +29,11 @@ define([
     }
 
     function getByBrowserSeries(collection){
-        var series = _.map(field(collection, 'browser'), function(browser){
+        var series = _.map(constants.BROWSERS, function(browser){
+            var model = collection.findWhere({browser: browser});
             return {
                 name: browser,
-                y: collection.findWhere({browser: browser}).get('share')
+                y: model ? model.get('share') : 0
             };
         });
         // keep data in sorted order to have a nice animation
@@ -40,12 +43,12 @@ define([
 
 
     function getMapSeries(collection, browser){
-            var series = _.map(field(collection, 'region'), function(region){
+            var series = _.map(constants.REGIONS, function(region){
                 var inRegion = collection.where({region: region});
                 return { 'hc-key': region,
                     'name': browser,
                     'value': browser === 'all'
-                        ? 100 : (inRegion.length ? collection.where({region: region})[0].get('share') : 100)};
+                        ? 100 : (inRegion.length ? collection.where({region: region})[0].get('share') : 0)};
             });
             return series;
     }

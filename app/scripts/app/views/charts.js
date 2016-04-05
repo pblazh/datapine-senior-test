@@ -1,4 +1,5 @@
-define([ 'underscore' ], function( _ ){
+define(['underscore', 'continents', '../constants'],
+       function( _, continents, constants ){
     'use strict';
 
     /*
@@ -9,34 +10,10 @@ define([ 'underscore' ], function( _ ){
      * THIS  PLACE NEEDS A REALLY HARD REFACTORING!
      */
 
-    var MAP_DATA = _.map(['ww', 'eu', 'na', 'sa', 'oc', 'as', 'af'],
+    var MAP_DATA = _.map(constants.REGIONS,
         function(region){
             return { 'hc-key': region, 'name': 'all', 'value': 0};
         });
-
-    // I want the colors to be consistant across charts.
-    var COLORS = {
-        IE:      '#7AE1F7',
-        Chrome:  '#FFCE44',
-        Firefox: '#E07E27',
-        Opera:   '#F53241',
-        Safari:  '#0EBDF1',
-        Edge:    '#598ABD',
-        Android: '#e4d354',
-        Other:  ['#2b908f', '#f45b5b', '#91e8e1'],
-    };
-
-    var MAP_COLORS = {
-        IE:      ['#C9F6FF', '#00D2FF'],
-        Chrome:  ['#FFE498', '#E2A700'],
-        Firefox: ['#FFC898', '#D06200'],
-        Opera:   ['#FFADB3', '#CC0010'],
-        Safari:  ['#A1E9FF', '#00A2D2'],
-        Edge:    ['#6EB5FF', '#0071E6'],
-        Android: ['#F7E45D', '#DAC000'],
-        all:     ['#CACAD6', '#CACAD6'],
-        Other:   ['#D9A5FF', '#9303FB'],
-    };
 
     var options = {
         year: {
@@ -46,7 +23,12 @@ define([ 'underscore' ], function( _ ){
         years: {
             xAxis: {type: 'category'},
             plotOptions: {
-                column: { stacking: 'normal', dataLabels: {enabled: true}}
+                column: {
+                    stacking: 'normal',
+                    dataLabels: {
+                        enabled: true
+                    }
+                }
             },
             tooltip: {
                 headerFormat: '<span class="chart_title">{series.name}</span>',
@@ -117,7 +99,6 @@ define([ 'underscore' ], function( _ ){
             pie: {
                 width: 300,
                 height: 200,
-                dataLabels: { enabled: false },
                 enableMouseTracking: false,
                 allowPointSelect: false,
                 startAngle: -90,
@@ -144,9 +125,11 @@ define([ 'underscore' ], function( _ ){
             data: [],
         }]
     };
+
     function color(browser){
-        return COLORS[browser] || COLORS.Other[Math.floor(Math.random() * COLORS.Other.length)];
+        return constants.COLORS[browser] || constants.COLORS.Other[Math.floor(Math.random() * constants.COLORS.Other.length)];
     }
+
     function colorize(series){
         _.each(series,
             function(s){
@@ -159,8 +142,7 @@ define([ 'underscore' ], function( _ ){
     return {
         colorize: colorize,
         chart: function(type, categories, series, onLoad){
-            colorize(series);
-            var n = _.merge(type === 'lines' ? {} : columnsChart, options[type],
+            var n = _.extend({}, type === 'lines' ? {} : columnsChart, options[type],
                     {
                         series: series,
                         xAxis: {
@@ -175,25 +157,50 @@ define([ 'underscore' ], function( _ ){
             n.chart.events = {load: onLoad};
             return n;
         },
-        map: function(data, mapData, click, over, tooltip, browser, onLoad){
-            var n = _.merge({}, options.map,
-                {
-                    colorAxis: {
-                        minColor: MAP_COLORS[browser][0],
-                        maxColor: MAP_COLORS[browser][1],
-                    },
-                    series : [
-                        {
-                            states: { hover: { color: '#7171A7'}},
-                            data : _.merge(MAP_DATA, data),
-                            mapData: mapData,
-                            point: { events: { click: click, mouseOver: over, mouseOut: function(){over()}}},
+        map: function(data, click, over, tooltip, browser, onLoad){
+            return {
+                title: { style: {display: 'none'} },
+                legend: { enabled: false },
+                chart: {
+                    borderColor: '#ff0000',
+                    backgroundColor: 'transparent',
+                    style: {cursor: 'pointer'},
+                    events: {load: onLoad},
+                },
+                colorAxis: {
+                    minColor: constants.MAP_COLORS[browser][0],
+                    maxColor: constants.MAP_COLORS[browser][1],
+                    min: 0,
+                    type: 'linear',
+                },
+                series: [
+                    {
+                        dataLabels: {color: '#ff0000'},
+                        borderColor: '#A2A2BB',
+                        borderWidth: 1,
+                        joinBy: 'hc-key',
+                        states: { hover: { color: '#7171A7'}},
+                        data : _.extend(constants.MAP_DATA, data),
+                        mapData: Highcharts.maps['custom/world-continents'],
+                        point: {
+                            events: {
+                                click: click,
+                                mouseOver: over,
+                                mouseOut: function(){over();}},
                         },
-                    ]}
-                    //tooltip ? {} : { tooltip: !false }
-            );
-            n.chart.events = {load: onLoad};
-            return n;
+                    },
+                ],
+                tooltip: {
+                    borderWidth: 0,
+                    borderRadius: 30,
+                    headerFormat: '',
+                    shadow: true,
+                    useHTML: true,
+                    padding: 0,
+                    title: false,
+                    pointFormat: '<span style="font-family: Roboto; font-size: 13px;text-transform: uppercase;">{point.name}:<br/><b style="font-size: 32px;">{point.value}%</b></span>',
+                },
+            };
         },
         circle: function(data, onLoad, title){
             var n = _.extend({}, circleChart);
@@ -202,6 +209,6 @@ define([ 'underscore' ], function( _ ){
             n.title.text = title;
             return n;
         },
-        mapColors: function(browser){return MAP_COLORS[browser]},
+        mapColors: function(browser){return constants.MAP_COLORS[browser];},
     };
 });

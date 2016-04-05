@@ -33,8 +33,10 @@ define([
                 });
             },
         },
-        afterRender: function(){
-            this.$('.errorsbox').hide().fadeIn('slow');
+        afterRender: function(self){
+            if(!self.__skipRender){
+                this.$('.errorsbox').hide().fadeIn('slow');
+            }
         }
     });
 
