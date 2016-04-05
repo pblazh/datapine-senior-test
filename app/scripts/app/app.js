@@ -36,7 +36,6 @@ define([
         }));
 
         fc = new FilteredCollection(dt);
-        //fc.filterBy('top', function(model){return model.get('share') >= 2});
 
         mainLayout = new Backbone.Layout({
             currentPage: store.getState().page,

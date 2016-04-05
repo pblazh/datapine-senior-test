@@ -45,7 +45,7 @@ define([
                 return { 'hc-key': region,
                     'name': browser,
                     'value': browser === 'all'
-                        ? 0 : (inRegion.length ? collection.where({region: region})[0].get('share') : 0)};
+                        ? 100 : (inRegion.length ? collection.where({region: region})[0].get('share') : 100)};
             });
             return series;
     }

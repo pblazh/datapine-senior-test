@@ -28,9 +28,14 @@ define([
                 store.dispatch(actions.setPage('about'));
             },
             'click .errorsbox': function(){
-                store.dispatch(actions.clearErrors());
+                this.$('.errorsbox').fadeOut(function(){
+                    store.dispatch(actions.clearErrors());
+                });
             },
         },
+        afterRender: function(){
+            this.$('.errorsbox').hide().fadeIn('slow');
+        }
     });
 
     return NavigationView;

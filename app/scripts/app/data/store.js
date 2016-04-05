@@ -59,10 +59,10 @@ define(['backbone', 'underscore', 'jquery', '../store/store', '../store/actions'
                         var d = new $.Deferred();
                         self.fetch(o.url, {region: o.region, remove: false})
                             .fail(function(err){
-                                store.dispatch(actions.addError('Got an error while fetching '+ o.url));
+                                store.dispatch(actions.addError('Got an error while fetching ' + o.url));
                                 d.resolve();
                             })
-                            .done(function(data){d.resolve()});
+                            .done(d.resolve);
                         return d.promise();
                     });
                 },

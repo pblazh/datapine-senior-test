@@ -34,11 +34,15 @@ define([
 
     /*
      * A small utility fuction to maker a breach through the binding.
+     * @prop self - the objecte to bind
+     * @prop store - name of a property to store the loaded chart
      */
-    function setChart(self, callBack){
+    function setChart(self, store, callBack){
         return function(){
-            self.__chart = this;
-            callBack();
+            self[store] = this;
+            if(callBack){
+                callBack();
+            }
         };
     }
     var MapView = Backbone.Layout.extend({
@@ -51,6 +55,8 @@ define([
             this.chartCollection = new FilteredCollection(this.collection)
                 .filterBy('ww', {region: 'ww'})
                 .filterBy('top', function(model){return model.get('share') >= 2});
+
+            _.bindAll(this, 'buildMap', 'updateMap', 'onSelect');
         },
         onSelect: function(code){
             // when over the continent update the donut chart
@@ -59,11 +65,31 @@ define([
             charts.colorize(series);
             this.__chart.series[0].setData(series.slice(0,7));
         },
+        updateLines: function(){
+            if( this.__lines){
+                var series = dataTools.getChartSeries(this.chartCollection);
+                charts.colorize(series);
+                for(var i = this.__lines.series.length, l = series.length; i<l; i++){
+                    this.__lines.addSeries(series[i]);
+                }
+            }
+        },
+        updateMap: function(forse){
+            this.onSelect();
+            var state = store.getState();
+            if(forse || this.__browser !== state.browser){
+                var fc = dataTools.toLastYearCollection(this.collection, state.browser);
+                var series = dataTools.getMapSeries(fc, state.browser);
+                var colors = charts.mapColors(state.browser);
+                this.__map.colorAxis[0].update({ minColor: colors[0], maxColor: colors[1]});
+                this.__map.series[0].setData(series);
+            }
+            this.__browser = state.browser;
+        },
         buildMap: function(){
             var state = store.getState();
+            this.__browser = state.browser;
             var fc = dataTools.toLastYearCollection(this.collection, state.browser);
-
-            // create a data array to build a map
             var series = dataTools.getMapSeries(fc, state.browser);
             this.$('.fgmap').highcharts('Map',
                 charts.map(series,
@@ -71,35 +97,43 @@ define([
                     function(){store.dispatch(actions.setRegion(this['hc-key']));},
                     (function(self){ return function(){self.onSelect( this && this['hc-key'] );}}(this)),
                     state.browser !== 'all',
-                    state.browser
+                    state.browser,
+                    setChart(this, '__map')
                 )
             );
+
         },
 
         /*
-         * The function is debounced. There is no need to rerender if more
-         * often the one time in 100ms.
+         * There is no reason to run that function more than once.
          */
-        buildChart: _.debounce(function(){
+        buildCharts: _.once(function(){
+            var state = store.getState();
             // create a data array to build a chart
             var series = dataTools.getChartSeries(this.chartCollection);
             this.$('.bgmap').highcharts(
-                charts.chart('lines', dataTools.field(this.collection, 'year'), series)
+                charts.chart('lines',
+                            dataTools.field(this.chartCollection, 'year'),
+                            [],
+                            setChart(this, '__lines', this.updateLines.bind(this))
+                            )
             );
 
             this.$('.donut').highcharts(
-                    charts.circle(
-                        [],
-                        setChart(this, this.onSelect.bind(this)),
-                        _.last(dataTools.field(this.collection, 'year'))));
+                charts.circle(
+                    [],
+                    setChart(this, '__chart', this.onSelect),
+                    _.last(dataTools.field(this.collection, 'year'))));
 
             this.buildMap();
-        }, 100),
+        }),
 
         afterRender: function() {
-            this.listenTo(this.collection, 'reset', this.buildChart);
-            store.subscribe(this.buildMap.bind(this));
-            this.buildChart();
+            this.listenTo(this.chartCollection, 'reset', this.updateLines);
+            //this.listenTo(this.collection, 'reset', this.buildCharts);
+            this.listenTo(this.collection, 'reset', function(){this.updateMap(true)});
+            store.subscribe(this.updateMap);
+            this.buildCharts();
         },
     });
 
