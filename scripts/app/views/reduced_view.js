@@ -27,8 +27,10 @@ define([
             var newState;
             if(this.store){
                 newState = _.pick.apply(null, [this.store.getState()].concat(this.interested));
-                if (!_.isEqual(newState, this.__state)){
+                this.__skipRender = _.isEqual(newState, this.__state);
+                if (!this.__skipRender){
                     this.__state = newState;
+                    return true;
                 }else{
                     return false;
                 }

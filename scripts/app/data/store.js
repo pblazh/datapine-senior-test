@@ -57,12 +57,14 @@ define(['backbone', 'underscore', 'jquery', '../store/store', '../store/actions'
                 function(prev, o){
                     return prev.then(function(){
                         var d = new $.Deferred();
+                        //setTimeout(function(){
                         self.fetch(o.url, {region: o.region, remove: false})
                             .fail(function(err){
-                                store.dispatch(actions.addError('Got an error while fetching '+ o.url));
+                                store.dispatch(actions.addError('Got an error while fetching ' + o.url));
                                 d.resolve();
                             })
-                            .done(function(data){d.resolve()});
+                            .done(d.resolve);
+                        //}, 1000);
                         return d.promise();
                     });
                 },
